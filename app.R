@@ -58,7 +58,15 @@ ui <- fluidPage(
         label = "Select range of dates:",
         range = TRUE, value = c(Sys.Date()-7, Sys.Date())
       ),
-      verbatimTextOutput(outputId = "res_range")
+      verbatimTextOutput(outputId = "res_range"),
+      
+      airDatepickerInput(
+        inputId = "close",
+        label = "Update when closing:",
+        value = Sys.Date(), position = "right top",
+        update_on = "close"
+      ),
+      verbatimTextOutput(outputId = "res_close")
       
     ),
     
@@ -76,9 +84,16 @@ ui <- fluidPage(
         inputId = "month",
         label = "Select months:",
         view = "months", minView = "months",
-        dateFormat = "MM yyyy"
+        dateFormat = "MM yyyy", monthsField = "months"
       ),
-      verbatimTextOutput(outputId = "res_month")
+      verbatimTextOutput(outputId = "res_month"),
+      
+      airDatepickerInput(
+        inputId = "minmax",
+        label = "Min & max dates:",
+        minDate = "2018-01-10", maxDate = "2018-01-21"
+      ),
+      verbatimTextOutput(outputId = "res_minmax")
       
     )
     
@@ -94,6 +109,8 @@ server <- function(input, output, session) {
   output$res_multiple <- renderPrint( str(input$multiple) )
   output$res_month <- renderPrint( str(input$month) )
   output$res_range <- renderPrint( str(input$range) )
+  output$res_minmax <- renderPrint({ str(input$minmax) })
+  output$res_close <- renderPrint({ str(input$close) })
   
 }
 

@@ -12,24 +12,48 @@ var AirPickerInputBinding = new Shiny.InputBinding();
 $.extend(AirPickerInputBinding, {
   initialize: function initialize(el) {
     var options = {};
-    var options2 = {};
+    var opdefault = {};
 		if ($(el).attr('data-start-date')) {
 		  var dateraw = JSON.parse($(el).attr('data-start-date'));
-		  var datada = [];
+		  var datedefault = [];
 		  for (var i=0; i<dateraw.length; i++) {
-		    datada[i] =  new Date(dateraw[i]);
+		    datedefault[i] =  new Date(dateraw[i]);
 		  }
 		  //console.log(datada);
-			options.startDate = datada;
+			opdefault.startDate = datedefault;
 			//console.log(options.startDate);
 			$(el).removeAttr('data-start-date');
 		}
-		options2.onSelect = function(formattedDate, date, inst) {
-      $(el).trigger('change');
-    };
-    console.log(options.startDate);
-    var dp = $(el).datepicker(options2).data('datepicker');
-    dp.selectDate(options.startDate);
+		if ($(el).attr('data-min-date')) {
+		  options.minDate = new Date($(el).attr('data-min-date'));
+		  $(el).removeAttr('data-min-date');
+		}
+		if ($(el).attr('data-max-date')) {
+		  options.maxDate = new Date($(el).attr('data-max-date'));
+		  $(el).removeAttr('data-max-date');
+		}
+		
+		var dp;
+		
+		if ($(el).attr('data-update-on') === 'close') {
+		  
+		  options.onHide = function(inst, animationCompleted) {
+		    if (animationCompleted){
+		      console.log('yep');
+		      $(el).trigger('change');
+		    }
+      };
+      dp = $(el).datepicker(options).data('datepicker');
+		} else {
+		  
+		  options.onSelect = function(formattedDate, date, inst) {
+        $(el).trigger('change');
+      };
+      dp = $(el).datepicker(options).data('datepicker');
+		}
+		$(el).removeAttr('data-update-on');
+		
+    dp.selectDate(opdefault.startDate);
   },
   find: function(scope) {
   	return $(scope).find('.sw-air-picker');
@@ -44,7 +68,7 @@ $.extend(AirPickerInputBinding, {
   getValue: function(el) {
   	//return el.value;
   	var sd = $(el).datepicker().data('datepicker').selectedDates;
-  	console.log(sd);
+  	//console.log(sd);
   	if (sd.length > 0) {
   	  // console.log(sd);
   	  var res = sd.map(function(e) { 

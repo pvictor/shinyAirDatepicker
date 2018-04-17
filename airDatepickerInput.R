@@ -14,29 +14,36 @@ library(shiny)
 airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = FALSE,
                                range = FALSE, timepicker = FALSE,
                                separator = " - ", placeholder = NULL, 
-                               inline = FALSE, dateFormat = "yyyy-mm-dd",
+                               dateFormat = "yyyy-mm-dd",
+                               minDate = NULL, maxDate = NULL,
                                view = c("days", "months", "years"),
                                minView = c("days", "months", "years"),
-                               clearButton = FALSE, autoClose = FALSE, 
-                               language = "en", width = NULL) {
+                               monthsField = c("monthsShort", "months"),
+                               clearButton = FALSE, todayButton = FALSE, autoClose = FALSE, 
+                               position = NULL, update_on = c("change", "close"),
+                               language = "en", inline = FALSE, width = NULL) {
   
   paramsAir <- dropNulls(list(
     id = inputId,
-    type = "text",
+    type = "text", placeholder = placeholder,
     class = "sw-air-picker form-control",
     `data-language` = language, 
     # `data-timepicker` = tolower(timepicker),
     `data-start-date` = if (!is.null(value)) jsonlite::toJSON(x = value, auto_unbox = FALSE),
     `data-range` = if (!is.null(value) && length(value) > 1) "true" else tolower(range),
     `data-date-format` = dateFormat,
-    placeholder = placeholder,
+    `data-min-date` = minDate, `data-max-date` = maxDate,
     `data-multiple-dates` = tolower(multiple),
     `data-multiple-dates-separator` = separator,
     `data-inline` = tolower(inline),
     `data-view` = match.arg(view),
     `data-min-view` = match.arg(minView),
     `data-clear-button` = tolower(clearButton),
-    `data-auto-close` = tolower(autoClose)
+    `data-auto-close` = tolower(autoClose),
+    `data-today-button` = tolower(todayButton),
+    `data-months-field` = match.arg(monthsField),
+    `data-update-on` = match.arg(update_on),
+    `data-position` = position
   ))
   
   tagAir <- do.call(tags$input, paramsAir)
