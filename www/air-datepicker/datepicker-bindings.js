@@ -16,6 +16,9 @@ $.extend(AirPickerInputBinding, {
 			options.startDate = new Date(JSON.parse($(el).attr('data-start-date')));
 			$(el).removeAttr('data-start-date');
 		}
+		options.onSelect = function(formattedDate, date, inst) {
+      $(el).trigger('change');
+    };
     var dp = $(el).datepicker(options).data('datepicker');
     dp.selectDate(options.startDate);
   },
@@ -26,19 +29,28 @@ $.extend(AirPickerInputBinding, {
   	//return InputBinding.prototype.getId.call(this, el) || el.name;
   	return $(el).attr('id');
   },
+  getType: function(el) {
+    return 'air.datepicker';
+  },
   getValue: function(el) {
   	//return el.value;
-  	return $('#' + $escapeAirPicker(el.id)).selectedDates;
+  	var sd = $(el).datepicker().data('datepicker').selectedDates;
+  	if (sd.length > 0) {
+  	  // console.log(sd);
+  	  var res = sd.map(function(e) { 
+  	    //console.log(e);
+        return e.yyyymmdd();
+      });
+  	  return res;
+  	}
+  	
   },
   setValue: function(el, value) {
-  	$('#se' + $escapeAirPicker(el.id)).selectDate(value);
+  	$('#' + $escapeAirPicker(el.id)).selectDate(value);
   },
   subscribe: function(el, callback) {
-   $('#' + $escapeAirPicker(el.id)).on('change', function(event) {
+   $(el).on('change', function(event) {
      callback();
-   });
-   $('#' + $escapeAirPicker(el.id) + '_AirPicker').on('click', function(event) { // on click
-      callback();
    });
   },
   unsubscribe: function(el) {
@@ -58,12 +70,20 @@ $.extend(AirPickerInputBinding, {
     }
 
     $(el).trigger('change');
-  },
-  getState: function(el) {
-  	return {
-    	//label: $(el).parent().find('label[for=' + el.id + ']').text(),
-    	value: this.getValue(el)//el.value
-  	};
   }
 });
 Shiny.inputBindings.register(AirPickerInputBinding, 'shiny.AirPickerInput');
+
+function parse_date(date) {
+  return date.getUTCFullYear() + '-' + date.getUTCMonth() + '-' + date.getUTCDate();
+}
+
+Date.prototype.yyyymmdd = function() {
+  var mm = this.getMonth() + 1; // getMonth() is zero-based
+  var dd = this.getDate();
+
+  return [this.getFullYear(),
+          (mm>9 ? '' : '0') + mm,
+          (dd>9 ? '' : '0') + dd
+         ].join('-');
+};

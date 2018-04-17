@@ -12,7 +12,7 @@ library(shiny)
 
 
 airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = FALSE,
-                               range = FALSE,
+                               range = FALSE, timepicker = FALSE,
                                separator = " - ", placeholder = NULL, 
                                inline = FALSE, dateFormat = "yyyy-mm-dd",
                                view = c("days", "months", "years"),
@@ -20,9 +20,11 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                                language = "en", width = NULL) {
   
   paramsAir <- dropNulls(list(
+    id = inputId,
     type = "text",
     class = "sw-air-picker form-control",
-    `data-language` = language,
+    `data-language` = language, 
+    # `data-timepicker` = tolower(timepicker),
     `data-start-date` = if (!is.null(value)) jsonlite::toJSON(x = value, auto_unbox = FALSE),
     `data-range` = if (!is.null(value) && length(value) > 1) "true" else tolower(range),
     `data-date-format` = dateFormat,
@@ -61,3 +63,17 @@ dropNulls <- function (x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]
 }
 
+
+shiny::registerInputHandler("air.datepicker", function(data, ...) {
+  if (is.null(data)) {
+    NULL
+  } else {
+    res <- try(as.Date(unlist(data)), silent = TRUE)
+    if ("try-error" %in% class(res)) {
+      warning("Failed to parse dates!")
+      as.Date(NA)
+    } else {
+      res
+    }
+  }
+}, force = TRUE)
