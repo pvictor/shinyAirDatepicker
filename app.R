@@ -38,10 +38,23 @@ ui <- fluidPage(
     
     column(
       width = 6,
+      
       airDatepickerInput(
         inputId = "air1",
         label = "First example:"
       )
+      
+    ),
+    
+    column(
+      width = 6,
+      
+      airDatepickerInput(
+        inputId = "defaultvalue",
+        label = "With a default date:",
+        value = Sys.Date()-7
+      )
+      
     )
     
   )

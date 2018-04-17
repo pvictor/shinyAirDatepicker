@@ -11,13 +11,27 @@
 library(shiny)
 
 
-airDatepickerInput <- function(inputId, label = NULL, placeholder = NULL, language = "en", width = NULL) {
+airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = FALSE,
+                               range = FALSE,
+                               separator = " - ", placeholder = NULL, 
+                               inline = FALSE, dateFormat = "yyyy-mm-dd",
+                               view = c("days", "months", "years"),
+                               minView = c("days", "months", "years"),
+                               language = "en", width = NULL) {
   
   paramsAir <- dropNulls(list(
     type = "text",
-    class = "datepicker-here form-control",
+    class = "sw-air-picker form-control",
     `data-language` = language,
-    placeholder = placeholder
+    `data-start-date` = if (!is.null(value)) jsonlite::toJSON(x = value, auto_unbox = FALSE),
+    `data-range` = if (!is.null(value) && length(value) > 1) "true" else tolower(range),
+    `data-date-format` = dateFormat,
+    placeholder = placeholder,
+    `data-multiple-dates` = tolower(multiple),
+    `data-multiple-dates-separator` = separator,
+    `data-inline` = tolower(inline),
+    `data-view` = match.arg(view),
+    `data-min-view` = match.arg(minView)
   ))
   
   tagAir <- do.call(tags$input, paramsAir)
@@ -27,7 +41,8 @@ airDatepickerInput <- function(inputId, label = NULL, placeholder = NULL, langua
       tagList(
         tags$link(href = "air-datepicker/datepicker.min.css", rel = "stylesheet", type = "text/css"),
         tags$script(src = "air-datepicker/datepicker.min.js"),
-        tags$script(src = "air-datepicker/i18n/datepicker.en.js")
+        tags$script(src = "air-datepicker/i18n/datepicker.en.js"),
+        tags$script(src = "air-datepicker/datepicker-bindings.js")
       )
     ),
     tags$div(
