@@ -81,7 +81,13 @@ $.extend(AirPickerInputBinding, {
   	}
   },
   setValue: function(el, value) {
-  	$('#' + $escapeAirPicker(el.id)).selectDate(value);
+    value = JSON.parse(value);
+    var newdate = [];
+		for (var i=0; i<value.length; i++) {
+		  newdate[i] =  new Date(value[i]);
+		}
+		
+  	$(el).datepicker().data('datepicker').selectDate(newdate);
   },
   subscribe: function(el, callback) {
    $(el).on('change', function(event) {

@@ -30,7 +30,7 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
     `data-language` = language, 
     # `data-timepicker` = tolower(timepicker),
     `data-start-date` = if (!is.null(value)) jsonlite::toJSON(x = value, auto_unbox = FALSE),
-    `data-range` = if (!is.null(value) && length(value) > 1) "true" else tolower(range),
+    `data-range` = tolower(range),
     `data-date-format` = dateFormat,
     `data-min-date` = minDate, `data-max-date` = maxDate,
     `data-multiple-dates` = tolower(multiple),
@@ -88,3 +88,25 @@ shiny::registerInputHandler("air.datepicker", function(data, ...) {
     }
   }
 }, force = TRUE)
+
+
+
+
+updateAirDateInput <- function(session, inputId, label = NULL, value = NULL) {
+  formatDate <- function(x) {
+    if (is.null(x)) 
+      return(NULL)
+    format(as.Date(x), "%Y-%m-%d")
+  }
+  value <- formatDate(value)
+  if (!is.null(value)) {
+    value <- as.character(jsonlite::toJSON(x = value, auto_unbox = FALSE))
+  }
+  message <- dropNulls(list(
+    label = label,
+    value = value
+  ))
+  session$sendInputMessage(inputId, message)
+}
+
+
