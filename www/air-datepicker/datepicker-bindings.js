@@ -12,14 +12,23 @@ var AirPickerInputBinding = new Shiny.InputBinding();
 $.extend(AirPickerInputBinding, {
   initialize: function initialize(el) {
     var options = {};
+    var options2 = {};
 		if ($(el).attr('data-start-date')) {
-			options.startDate = new Date(JSON.parse($(el).attr('data-start-date')));
+		  var dateraw = JSON.parse($(el).attr('data-start-date'));
+		  var datada = [];
+		  for (var i=0; i<dateraw.length; i++) {
+		    datada[i] =  new Date(dateraw[i]);
+		  }
+		  //console.log(datada);
+			options.startDate = datada;
+			//console.log(options.startDate);
 			$(el).removeAttr('data-start-date');
 		}
-		options.onSelect = function(formattedDate, date, inst) {
+		options2.onSelect = function(formattedDate, date, inst) {
       $(el).trigger('change');
     };
-    var dp = $(el).datepicker(options).data('datepicker');
+    console.log(options.startDate);
+    var dp = $(el).datepicker(options2).data('datepicker');
     dp.selectDate(options.startDate);
   },
   find: function(scope) {
@@ -35,6 +44,7 @@ $.extend(AirPickerInputBinding, {
   getValue: function(el) {
   	//return el.value;
   	var sd = $(el).datepicker().data('datepicker').selectedDates;
+  	console.log(sd);
   	if (sd.length > 0) {
   	  // console.log(sd);
   	  var res = sd.map(function(e) { 
@@ -42,8 +52,9 @@ $.extend(AirPickerInputBinding, {
         return e.yyyymmdd();
       });
   	  return res;
+  	} else {
+  	  return null;
   	}
-  	
   },
   setValue: function(el, value) {
   	$('#' + $escapeAirPicker(el.id)).selectDate(value);

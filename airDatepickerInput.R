@@ -17,6 +17,7 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                                inline = FALSE, dateFormat = "yyyy-mm-dd",
                                view = c("days", "months", "years"),
                                minView = c("days", "months", "years"),
+                               clearButton = FALSE, autoClose = FALSE, 
                                language = "en", width = NULL) {
   
   paramsAir <- dropNulls(list(
@@ -33,7 +34,9 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
     `data-multiple-dates-separator` = separator,
     `data-inline` = tolower(inline),
     `data-view` = match.arg(view),
-    `data-min-view` = match.arg(minView)
+    `data-min-view` = match.arg(minView),
+    `data-clear-button` = tolower(clearButton),
+    `data-auto-close` = tolower(autoClose)
   ))
   
   tagAir <- do.call(tags$input, paramsAir)
@@ -71,7 +74,8 @@ shiny::registerInputHandler("air.datepicker", function(data, ...) {
     res <- try(as.Date(unlist(data)), silent = TRUE)
     if ("try-error" %in% class(res)) {
       warning("Failed to parse dates!")
-      as.Date(NA)
+      # as.Date(NA)
+      data
     } else {
       res
     }
