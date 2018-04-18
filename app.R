@@ -75,7 +75,15 @@ ui <- fluidPage(
         dateFormat = "dd MM yyyy",
         language = "fr"
       ),
-      verbatimTextOutput(outputId = "res_french")
+      verbatimTextOutput(outputId = "res_french"),
+      
+      airDatepickerInput(
+        inputId = "disable",
+        label = "Disable some dates:",
+        value = Sys.Date(), position = "top left",
+        disabledDates = Sys.Date() + c(-9, -5, 2, 5, 8)
+      ),
+      verbatimTextOutput(outputId = "res_disable")
       
     ),
     
@@ -129,6 +137,7 @@ server <- function(input, output, session) {
   output$res_close <- renderPrint({ str(input$close) })
   output$res_inline <- renderPrint({ str(input$inline) })
   output$res_french <- renderPrint({ str(input$french) })
+  output$res_disable <- renderPrint({ str(input$disable) })
   
 }
 

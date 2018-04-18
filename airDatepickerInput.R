@@ -16,6 +16,7 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                                separator = " - ", placeholder = NULL, 
                                dateFormat = "yyyy-mm-dd",
                                minDate = NULL, maxDate = NULL,
+                               disabledDates = NULL,
                                view = c("days", "months", "years"),
                                minView = c("days", "months", "years"),
                                monthsField = c("monthsShort", "months"),
@@ -33,6 +34,9 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
   )
   if (inherits(value, "POSIXt")) {
     value <- format(lubridate::with_tz(value, tzone = "UTC"), format = "%Y-%m-%dT%H:%M:00")
+  }
+  if (!is.null(disabledDates)) {
+    disabledDates <- jsonlite::toJSON(x = disabledDates, auto_unbox = FALSE)
   }
   paramsAir <- dropNulls(list(
     id = inputId,
@@ -52,7 +56,8 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
     `data-today-button` = tolower(todayButton),
     `data-months-field` = match.arg(monthsField),
     `data-update-on` = match.arg(update_on),
-    `data-position` = position
+    `data-position` = position,
+    `data-disabled-dates` = disabledDates
   ))
   paramsAir <- c(paramsAir, timepickerOpts)
   

@@ -33,6 +33,27 @@ $.extend(AirPickerInputBinding, {
 		  $(el).removeAttr('data-max-date');
 		}
 		
+		// disable dates
+		if ($(el).attr('data-disabled-dates')) {
+		  var disabledDates = JSON.parse($(el).attr('data-disabled-dates'));
+		  options.onRenderCell = function(d, type) {
+        if (type == 'day') {
+    			var disabled = false,
+          		formatted = getFormattedDate(d);
+              
+              disabled = disabledDates.filter(function(date){
+              	return date == formatted;
+              }).length;
+          
+    					return {
+              	disabled: disabled
+              };
+        }
+      };
+		  $(el).removeAttr('data-disabled-dates');
+		}
+		
+		// initialiaze
 		var dp;
 		
 		if ($(el).attr('data-update-on') === 'close') {
@@ -45,7 +66,7 @@ $.extend(AirPickerInputBinding, {
       };
       dp = $(el).datepicker(options).data('datepicker');
 		} else {
-		  
+		  console.log(options);
 		  options.onSelect = function(formattedDate, date, inst) {
         $(el).trigger('change');
       };
@@ -144,3 +165,24 @@ Date.prototype.yyyymmdd = function() {
           (dd>9 ? '' : '0') + dd
          ].join('-');
 };
+
+function getFormattedDate(date) {
+  var year = date.getFullYear(),
+    month = date.getMonth() + 1,
+    day = date.getDate();
+    
+    if (month > 9) {
+      if (day > 9) {
+        return year + '-' + month + '-' + day;
+      } else {
+        return year + '-' + month + '-0' + day;
+      }
+    } else {
+      if (day > 9) {
+        return year + '-0' + month + '-' + day;
+      } else {
+        return year + '-0' + month + '-0' + day;
+      }
+    }
+}
+
