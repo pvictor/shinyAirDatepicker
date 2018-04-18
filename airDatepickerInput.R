@@ -121,7 +121,8 @@ shiny::registerInputHandler("air.datepicker", function(data, ...) {
 
 
 
-updateAirDateInput <- function(session, inputId, label = NULL, value = NULL) {
+updateAirDateInput <- function(session, inputId, label = NULL, value = NULL, clear = FALSE) {
+  stopifnot(is.logical(clear))
   formatDate <- function(x) {
     if (is.null(x)) 
       return(NULL)
@@ -133,7 +134,8 @@ updateAirDateInput <- function(session, inputId, label = NULL, value = NULL) {
   }
   message <- dropNulls(list(
     label = label,
-    value = value
+    value = value,
+    clear = clear
   ))
   session$sendInputMessage(inputId, message)
 }

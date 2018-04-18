@@ -53,7 +53,16 @@ ui <- fluidPage(
     column(
       width = 6,
       
-      ""
+      airDatepickerInput(
+        inputId = "airclear",
+        label = "Clear all dates selected:",
+        multiple = TRUE,
+        value = Sys.Date() + 1:7
+      ),
+      verbatimTextOutput(outputId = "res_airclear"),
+      actionButton(
+        inputId = "upclear", label = "Clear dates"
+      )
       
     )
     
@@ -64,6 +73,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  # Update selected date
   output$res_airup1 <- renderPrint( str(input$airup1) )
   observeEvent(input$update_airup1, {
     updateAirDateInput(
@@ -73,6 +83,15 @@ server <- function(input, output, session) {
     )
   })
   
+  # Clear all dates selected
+  output$res_airclear <- renderPrint( str(input$airclear) )
+  observeEvent(input$upclear, {
+    updateAirDateInput(
+      session = session,
+      inputId = "airclear",
+      clear = TRUE
+    )
+  })
 }
 
 # app ----

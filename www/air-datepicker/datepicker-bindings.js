@@ -98,6 +98,9 @@ $.extend(AirPickerInputBinding, {
   	$(el).off('.AirPickerInputBinding');
   },
   receiveMessage: function(el, data) {
+    if (data.clear) {
+      $(el).datepicker().data('datepicker').clear();
+    }
   	if (data.hasOwnProperty('value')) this.setValue(el, data.value);
 
     if (data.hasOwnProperty('label')) {
