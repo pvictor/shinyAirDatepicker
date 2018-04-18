@@ -21,8 +21,9 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                                monthsField = c("monthsShort", "months"),
                                clearButton = FALSE, todayButton = FALSE, autoClose = FALSE, 
                                position = NULL, update_on = c("change", "close"),
+                               addon = c("right", "left", "none"),
                                language = "en", inline = FALSE, width = NULL) {
-  
+  addon <- match.arg(addon)
   paramsAir <- dropNulls(list(
     id = inputId,
     type = "text", placeholder = placeholder,
@@ -62,7 +63,12 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
       style = if (!is.null(width)) 
         paste0("width: ", htmltools::validateCssUnit(width), ";"),
       if (!is.null(label)) tags$label(label, `for` = inputId),
-      tagAir
+      tags$div(
+        class = "input-group",
+        if (addon == "left") tags$div(class = "input-group-addon", icon("calendar")),
+        tagAir,
+        if (addon == "right") tags$div(class = "input-group-addon", icon("calendar"))
+      )
     )
   )
 }

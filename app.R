@@ -64,7 +64,7 @@ ui <- fluidPage(
         inputId = "close",
         label = "Update when closing:",
         value = Sys.Date(), position = "right top",
-        update_on = "close"
+        update_on = "close", addon = "left"
       ),
       verbatimTextOutput(outputId = "res_close")
       
