@@ -66,7 +66,16 @@ ui <- fluidPage(
         value = Sys.Date(), position = "right top",
         update_on = "close", addon = "left"
       ),
-      verbatimTextOutput(outputId = "res_close")
+      verbatimTextOutput(outputId = "res_close"),
+      
+      airDatepickerInput(
+        inputId = "french",
+        label = "En fran\u00e7ais:",
+        value = Sys.Date(), 
+        dateFormat = "dd MM yyyy",
+        language = "fr"
+      ),
+      verbatimTextOutput(outputId = "res_french")
       
     ),
     
@@ -119,6 +128,7 @@ server <- function(input, output, session) {
   output$res_minmax <- renderPrint({ str(input$minmax) })
   output$res_close <- renderPrint({ str(input$close) })
   output$res_inline <- renderPrint({ str(input$inline) })
+  output$res_french <- renderPrint({ str(input$french) })
   
 }
 

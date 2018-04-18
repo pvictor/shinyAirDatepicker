@@ -24,6 +24,12 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                                addon = c("right", "left", "none"),
                                language = "en", inline = FALSE, width = NULL) {
   addon <- match.arg(addon)
+  language <- match.arg(
+    arg = language,
+    choices = c("cs", "da", "de", "en", "es", "fi", "fr", "hu", "nl", "pl", 
+                "pt-BR", "pt", "ro", "sk", "zh"),
+    several.ok = TRUE
+  )
   paramsAir <- dropNulls(list(
     id = inputId,
     class = "sw-air-picker",
@@ -64,11 +70,20 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
   
   tagList(
     singleton(
-      tagList(
+      tags$head(
         tags$link(href = "air-datepicker/datepicker.min.css", rel = "stylesheet", type = "text/css"),
         tags$script(src = "air-datepicker/datepicker.min.js"),
-        tags$script(src = "air-datepicker/i18n/datepicker.en.js"),
         tags$script(src = "air-datepicker/datepicker-bindings.js")
+      )
+    ),
+    singleton(
+      tags$head(
+        lapply(
+          X = language,
+          FUN = function(x) {
+            tags$script(src = sprintf("air-datepicker/i18n/datepicker.%s.js", x))
+          }
+        )
       )
     ),
     tags$div(
