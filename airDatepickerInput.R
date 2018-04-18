@@ -20,6 +20,7 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                                minView = c("days", "months", "years"),
                                monthsField = c("monthsShort", "months"),
                                clearButton = FALSE, todayButton = FALSE, autoClose = FALSE, 
+                               timepickerOpts = timepickerOptions(),
                                position = NULL, update_on = c("change", "close"),
                                addon = c("right", "left", "none"),
                                language = "en", inline = FALSE, width = NULL) {
@@ -30,11 +31,14 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                 "pt-BR", "pt", "ro", "sk", "zh"),
     several.ok = TRUE
   )
+  if (inherits(value, "POSIXt")) {
+    value <- format(lubridate::with_tz(value, tzone = "UTC"), format = "%Y-%m-%dT%H:%M:00")
+  }
   paramsAir <- dropNulls(list(
     id = inputId,
     class = "sw-air-picker",
     `data-language` = language, 
-    # `data-timepicker` = tolower(timepicker),
+    `data-timepicker` = tolower(timepicker),
     `data-start-date` = if (!is.null(value)) jsonlite::toJSON(x = value, auto_unbox = FALSE),
     `data-range` = tolower(range),
     `data-date-format` = dateFormat,
@@ -50,6 +54,7 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
     `data-update-on` = match.arg(update_on),
     `data-position` = position
   ))
+  paramsAir <- c(paramsAir, timepickerOpts)
   
   if (!inline) {
     addArgs <- dropNulls(list(
@@ -96,6 +101,22 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
   )
 }
 
+timepickerOptions <- function(dateTimeSeparator = NULL, timeFormat = NULL,
+                           minHours = NULL, maxHours = NULL, 
+                           minMinutes = NULL, maxMinutes = NULL,
+                           hoursStep = NULL, minutesStep = NULL) {
+  dropNulls(list(
+    `data-date-time-separator` = dateTimeSeparator,
+    `data-time-format` = timeFormat,
+    `data-min-hours` = minHours,
+    `data-max-hours` = maxHours,
+    `data-min-minutes` = minMinutes,
+    `data-max-minutes` = maxMinutes,
+    `data-hours-step` = hoursStep,
+    `data-minutes-step` = minutesStep
+  ))
+}
+
 
 
 dropNulls <- function (x) {
@@ -103,11 +124,29 @@ dropNulls <- function (x) {
 }
 
 
-shiny::registerInputHandler("air.datepicker", function(data, ...) {
+shiny::registerInputHandler("air.date", function(data, ...) {
   if (is.null(data)) {
     NULL
   } else {
     res <- try(as.Date(unlist(data)), silent = TRUE)
+    if ("try-error" %in% class(res)) {
+      warning("Failed to parse dates!")
+      # as.Date(NA)
+      data
+    } else {
+      res
+    }
+  }
+}, force = TRUE)
+
+shiny::registerInputHandler("air.datetime", function(data, ...) {
+  parse_datetime <- function(x) {
+    lubridate::with_tz(as.POSIXct(x = x, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC"))
+  }
+  if (is.null(data)) {
+    NULL
+  } else {
+    res <- try(parse_datetime(unlist(data)), silent = TRUE)
     if ("try-error" %in% class(res)) {
       warning("Failed to parse dates!")
       # as.Date(NA)

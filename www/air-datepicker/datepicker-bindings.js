@@ -63,18 +63,31 @@ $.extend(AirPickerInputBinding, {
   	return $(el).attr('id');
   },
   getType: function(el) {
-    return 'air.datepicker';
+    console.log($(el).attr('data-timepicker') === 'false');
+    if ($(el).attr('data-timepicker') !== 'false') {
+      return 'air.datetime';
+    } else {
+      console.log("hum");
+      return 'air.date';
+    }
   },
   getValue: function(el) {
   	//return el.value;
+  	
   	var sd = $(el).datepicker().data('datepicker').selectedDates;
-  	//console.log(sd);
+  	var timepicker = $(el).attr('data-timepicker');
+  	var res;
+  	
   	if (sd.length > 0) {
   	  // console.log(sd);
-  	  var res = sd.map(function(e) { 
-  	    //console.log(e);
-        return e.yyyymmdd();
-      });
+  	  if (timepicker === 'false') {
+  	    res = sd.map(function(e) { 
+    	    //console.log(e);
+          return e.yyyymmdd();
+        });
+  	  } else {
+  	    res = sd;
+  	  }
   	  return res;
   	} else {
   	  return null;
