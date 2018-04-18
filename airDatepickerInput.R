@@ -26,8 +26,7 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
   addon <- match.arg(addon)
   paramsAir <- dropNulls(list(
     id = inputId,
-    type = "text", placeholder = placeholder,
-    class = "sw-air-picker form-control",
+    class = "sw-air-picker",
     `data-language` = language, 
     # `data-timepicker` = tolower(timepicker),
     `data-start-date` = if (!is.null(value)) jsonlite::toJSON(x = value, auto_unbox = FALSE),
@@ -36,7 +35,6 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
     `data-min-date` = minDate, `data-max-date` = maxDate,
     `data-multiple-dates` = tolower(multiple),
     `data-multiple-dates-separator` = separator,
-    `data-inline` = tolower(inline),
     `data-view` = match.arg(view),
     `data-min-view` = match.arg(minView),
     `data-clear-button` = tolower(clearButton),
@@ -47,7 +45,22 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
     `data-position` = position
   ))
   
-  tagAir <- do.call(tags$input, paramsAir)
+  if (!inline) {
+    addArgs <- dropNulls(list(
+      type = "text", 
+      class = " form-control", 
+      placeholder = placeholder
+    ))
+    tagAir <- do.call(tags$input, c(paramsAir, addArgs))
+    tagAir <- tags$div(
+      class = "input-group",
+      if (addon == "left") tags$div(class = "input-group-addon", icon("calendar")),
+      tagAir,
+      if (addon == "right") tags$div(class = "input-group-addon", icon("calendar"))
+    )
+  } else {
+    tagAir <- do.call(tags$div, paramsAir)
+  }
   
   tagList(
     singleton(
@@ -63,12 +76,7 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
       style = if (!is.null(width)) 
         paste0("width: ", htmltools::validateCssUnit(width), ";"),
       if (!is.null(label)) tags$label(label, `for` = inputId),
-      tags$div(
-        class = "input-group",
-        if (addon == "left") tags$div(class = "input-group-addon", icon("calendar")),
-        tagAir,
-        if (addon == "right") tags$div(class = "input-group-addon", icon("calendar"))
-      )
+      tagAir
     )
   )
 }

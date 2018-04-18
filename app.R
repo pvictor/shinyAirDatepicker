@@ -93,7 +93,14 @@ ui <- fluidPage(
         label = "Min & max dates:",
         minDate = "2018-01-10", maxDate = "2018-01-21"
       ),
-      verbatimTextOutput(outputId = "res_minmax")
+      verbatimTextOutput(outputId = "res_minmax"),
+      
+      airDatepickerInput(
+        inputId = "inline",
+        label = "Inline:",
+        inline = TRUE
+      ),
+      verbatimTextOutput(outputId = "res_inline")
       
     )
     
@@ -111,6 +118,7 @@ server <- function(input, output, session) {
   output$res_range <- renderPrint( str(input$range) )
   output$res_minmax <- renderPrint({ str(input$minmax) })
   output$res_close <- renderPrint({ str(input$close) })
+  output$res_inline <- renderPrint({ str(input$inline) })
   
 }
 
