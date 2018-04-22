@@ -196,6 +196,23 @@ airMonthpickerInput <- function(inputId, label = NULL, value = NULL, ...) {
   do.call(airDatepickerInput, args)
 }
 
+#' @rdname airDatepicker
+#' @importFrom utils modifyList
+airYearpickerInput <- function(inputId, label = NULL, value = NULL, ...) {
+  args <- list(...)
+  args <- modifyList(
+    val = args,
+    x = list(
+      inputId = inputId,
+      label = label,
+      value = value,
+      view = "years",
+      minView = "years"
+    )
+  )
+  do.call(airDatepickerInput, args)
+}
+
 
 dropNulls <- function (x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]

@@ -2,7 +2,7 @@
 
 #  ------------------------------------------------------------------------
 #
-# Title : Air monthpicker
+# Title : Air yearpicker
 #    By : Vic
 #  Date : 2018-04-22
 #    
@@ -31,7 +31,7 @@ source("airDatepickerInput.R")
 # ui ----
 
 ui <- fluidPage(
-  tags$h2("Air monthpicker examples"),
+  tags$h2("Air yearpicker examples"),
   tags$br(),
   
   fluidRow(
@@ -39,24 +39,24 @@ ui <- fluidPage(
     column(
       width = 6,
       
-      airMonthpickerInput(
+      airYearpickerInput(
         inputId = "default",
         label = "First example:"
       ),
       verbatimTextOutput(outputId = "res_default"),
       
-      airMonthpickerInput(
+      airYearpickerInput(
         inputId = "multiple",
-        label = "Select multiple months:",
-        placeholder = "You can pick 3 months",
+        label = "Select multiple years:",
+        placeholder = "You can pick 3 years",
         multiple = 3, clearButton = TRUE
       ),
       verbatimTextOutput(outputId = "res_multiple"),
       
-      airMonthpickerInput(
+      airYearpickerInput(
         inputId = "range",
-        label = "Select range of months:",
-        range = TRUE, value = c(Sys.Date()-60, Sys.Date())
+        label = "Select range of years:",
+        range = TRUE, value = c(Sys.Date()-365*3, Sys.Date())
       ),
       verbatimTextOutput(outputId = "res_range")
       
@@ -65,21 +65,21 @@ ui <- fluidPage(
     column(
       width = 6,
       
-      airMonthpickerInput(
+      airYearpickerInput(
         inputId = "defaultValue",
-        label = "With a default month:",
+        label = "With a default year:",
         value = Sys.Date()
       ),
       verbatimTextOutput(outputId = "res_defaultValue"),
       
-      airMonthpickerInput(
+      airYearpickerInput(
         inputId = "minmax",
-        label = "Min & max month:",
-        minDate = "2018-01-01", maxDate = "2018-12-01"
+        label = "Min & max year:",
+        minDate = "2011-01-01", maxDate = "2018-01-01"
       ),
       verbatimTextOutput(outputId = "res_minmax"),
       
-      airMonthpickerInput(
+      airYearpickerInput(
         inputId = "inline",
         label = "Inline:",
         inline = TRUE
@@ -101,7 +101,7 @@ server <- function(input, output, session) {
   output$res_range <- renderPrint( str(input$range) )
   output$res_minmax <- renderPrint({ str(input$minmax) })
   output$res_inline <- renderPrint({ str(input$inline) })
-
+  
 }
 
 # app ----
