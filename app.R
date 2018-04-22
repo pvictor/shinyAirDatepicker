@@ -31,7 +31,7 @@ source("airDatepickerInput.R")
 # ui ----
 
 ui <- fluidPage(
-  tags$h2("Air datepicker example"),
+  tags$h2("Air datepicker examples"),
   tags$br(),
   
   fluidRow(

@@ -60,13 +60,13 @@ $.extend(AirPickerInputBinding, {
 		  
 		  options.onHide = function(inst, animationCompleted) {
 		    if (animationCompleted){
-		      console.log('yep');
+		      //console.log('change');
 		      $(el).trigger('change');
 		    }
       };
       dp = $(el).datepicker(options).data('datepicker');
 		} else {
-		  console.log(options);
+		  //console.log(options);
 		  options.onSelect = function(formattedDate, date, inst) {
         $(el).trigger('change');
       };
@@ -84,11 +84,10 @@ $.extend(AirPickerInputBinding, {
   	return $(el).attr('id');
   },
   getType: function(el) {
-    console.log($(el).attr('data-timepicker') === 'false');
+    // console.log($(el).attr('data-timepicker') === 'false');
     if ($(el).attr('data-timepicker') !== 'false') {
       return 'air.datetime';
     } else {
-      console.log("hum");
       return 'air.date';
     }
   },
@@ -139,12 +138,12 @@ $.extend(AirPickerInputBinding, {
 
     if (data.hasOwnProperty('label')) {
       // console.log(el);
-      $(el).parent().find('label[for="' + data.id + '"]').text(data.label);
+      $(el).parent().parent().find('label[for="' + data.id + '"]').text(data.label);
     }
 
     if (data.hasOwnProperty('placeholder')) {
       // why [0] ??
-      $('#se' + data.id)[0].placeholder = data.placeholder;
+      $('#' + data.id)[0].placeholder = data.placeholder;
     }
 
     $(el).trigger('change');

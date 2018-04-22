@@ -9,6 +9,8 @@
 #  ------------------------------------------------------------------------
 
 library(shiny)
+library(jsonlite)
+library(htmltools)
 
 
 
@@ -247,6 +249,7 @@ updateAirDateInput <- function(session, inputId, label = NULL, value = NULL, cle
     value <- as.character(toJSON(x = value, auto_unbox = FALSE))
   }
   message <- dropNulls(list(
+    id = inputId,
     label = label,
     value = value,
     clear = clear

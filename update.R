@@ -46,6 +46,18 @@ ui <- fluidPage(
         inputId = "update_airup1",
         label = "Choose a date to update air datepicker:",
         min = Sys.Date() - 7, value = Sys.Date(), max = Sys.Date() + 7
+      ),
+      
+      tags$br(),
+      
+      airDatepickerInput(
+        inputId = "airuplabel",
+        label = "Update label:"
+      ),
+      verbatimTextOutput(outputId = "res_airuplabel"),
+      textInput(
+        inputId = "updatelabel",
+        label = "Update label above"
       )
       
     ),
@@ -92,6 +104,15 @@ server <- function(input, output, session) {
       clear = TRUE
     )
   })
+  
+  observeEvent(input$updatelabel, {
+    updateAirDateInput(
+      session = session,
+      inputId = "airuplabel",
+      label = input$updatelabel
+    )
+  }, ignoreInit = TRUE)
+  
 }
 
 # app ----
