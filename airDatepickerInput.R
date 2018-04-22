@@ -54,6 +54,8 @@ library(htmltools)
 #' @param width The width of the input, e.g. \code{'400px'}, or \code{'100%%'}; see \link{validateCssUnit}.
 #' 
 #' @note This widget prevents `dateInput` from working, don't use both !
+#' 
+#' @name airDatepicker
 #'
 #' @export
 #' 
@@ -175,6 +177,24 @@ timepickerOptions <- function(dateTimeSeparator = NULL, timeFormat = NULL,
   ))
 }
 
+#' @rdname airDatepicker
+#' @importFrom utils modifyList
+airMonthpickerInput <- function(inputId, label = NULL, value = NULL, ...) {
+  args <- list(...)
+  args <- modifyList(
+    val = args,
+    x = list(
+      inputId = inputId,
+      label = label,
+      value = value,
+      view = "months",
+      minView = "months",
+      dateFormat = "MM yyyy", 
+      monthsField = "months"
+    )
+  )
+  do.call(airDatepickerInput, args)
+}
 
 
 dropNulls <- function (x) {
