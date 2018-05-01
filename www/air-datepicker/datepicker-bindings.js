@@ -106,7 +106,12 @@ $.extend(AirPickerInputBinding, {
           return e.yyyymmdd();
         });
   	  } else {
-  	    res = sd;
+  	    var tz = new Date().toString().match(/([-\+][0-9]+)\s/)[1];
+  	    res = sd.map(function(e) { 
+    	    //console.log(e);
+          return e.valueOf();//toISOString() + tz;
+        });
+  	    //res = sd ;
   	  }
   	  return res;
   	} else {

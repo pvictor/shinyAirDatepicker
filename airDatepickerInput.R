@@ -55,6 +55,8 @@ library(htmltools)
 #' 
 #' @note This widget prevents `dateInput` from working, don't use both !
 #' 
+#' @return a \code{Date} object or a \code{POSIXct} in UTC timezone.
+#' 
 #' @name airDatepicker
 #'
 #' @export
@@ -62,7 +64,6 @@ library(htmltools)
 #' @importFrom htmltools tags tagList validateCssUnit
 #' @importFrom shiny singleton
 #' @importFrom jsonlite toJSON
-#' @importFrom lubridate with_tz
 #'
 #' @examples
 #' 
@@ -87,9 +88,6 @@ airDatepickerInput <- function(inputId, label = NULL, value = NULL, multiple = F
                 "pt-BR", "pt", "ro", "sk", "zh"),
     several.ok = TRUE
   )
-  if (inherits(value, "POSIXt")) {
-    value <- format(with_tz(value, tzone = "UTC"), format = "%Y-%m-%dT%H:%M:00")
-  }
   if (!is.null(disabledDates)) {
     disabledDates <- toJSON(x = disabledDates, auto_unbox = FALSE)
   }
@@ -236,7 +234,7 @@ shiny::registerInputHandler("air.date", function(data, ...) {
 
 shiny::registerInputHandler("air.datetime", function(data, ...) {
   parse_datetime <- function(x) {
-    with_tz(as.POSIXct(x = x, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC"))
+    as.POSIXct(x = x/1000, origin = "1970-01-01", tz = "UTC")
   }
   if (is.null(data)) {
     NULL

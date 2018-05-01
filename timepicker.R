@@ -58,15 +58,30 @@ ui <- fluidPage(
       airDatepickerInput(
         inputId = "options",
         label = "With some options:",
-        multiple = TRUE, value = Sys.time(),
+        multiple = TRUE, 
+        value = as.POSIXct("2018-05-01 20:00:00"),
         timepicker = TRUE,
-        timepickerOpts = timepickerOpts(
-          dateTimeSeparator = ":", 
+        timepickerOpts = timepickerOptions(
+          dateTimeSeparator = " at ", 
           minutesStep = 10, 
           hoursStep = 2
         )
       ),
-      verbatimTextOutput(outputId = "res_options")
+      verbatimTextOutput(outputId = "res_options"),
+      
+      airDatepickerInput(
+        inputId = "french",
+        label = "French locale:",
+        value = "2018-05-01 20:00:00",
+        timepicker = TRUE,
+        language = "fr",
+        timepickerOpts = timepickerOptions(
+          dateTimeSeparator = " \u00e0 ", 
+          minutesStep = 10, 
+          hoursStep = 2
+        )
+      ),
+      verbatimTextOutput(outputId = "res_french")
       
     )
     
@@ -78,8 +93,9 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   output$res_datedefault <- renderPrint( str(input$datedefault) )
-  output$res_datetime <- renderPrint( str(input$datetime) )
-  output$res_options <- renderPrint( str(input$options) )
+  output$res_datetime <- renderPrint( input$datetime )
+  output$res_options <- renderPrint( input$options )
+  output$res_french <- renderPrint( input$french )
   
 }
 
